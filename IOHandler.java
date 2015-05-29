@@ -1,11 +1,4 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.File;
-
+import java.io.*;
 import java.util.*;
 
 public class IOHandler{
@@ -22,50 +15,6 @@ public class IOHandler{
 		dictionary = new ArrayList<String>();
 		catNames = new ArrayList<String>();
 		categories = new ArrayList<Category>();
-	}
-
-	public ArrayList<String> getCatNames(){
-		return this.catNames;
-	}
-
-	public ArrayList<Category> getCategories(){
-		return this.categories;
-	}
-
-	public ArrayList<String> readMap(String filename){
-		String info;
-		File file = new File(filename);
-		hash = new Hashtable<String, Category>();		
-
-		try{
-			FileReader fr = new FileReader(file);
-			BufferedReader buff = new BufferedReader(fr);
-				
-			while(true){
-				info = buff.readLine();
-					
-				if(info == null){
-					break;
-				}
-
-				info = info.split(" ", 2)[1]; 
-				if(!catNames.contains(info)){
-					catNames.add(info);
-					categories.add(new Category(info));
-					hash.put(info, new Category(info));
-				}
-
-				map.add(info);
-			}
-			
-			buff.close();
-		}catch(IOException e){
-			System.out.println("Something bad happened :(\n");
-			System.exit(1);
-		}
-
-
-		return map;
 	}
 
 	public ArrayList<String> readDictionary(String filename){
@@ -97,10 +46,10 @@ public class IOHandler{
 		return dictionary;
 	}
 
-	public Document readFile(String filename){
+	public void readTrainingFile(String filename, Category category){
 
-		Document doc = new Document();
 		File file = new File(filename);
+		Document doc;
 		String info;
 				
 		try{
@@ -113,7 +62,43 @@ public class IOHandler{
 				if(info == null){
 					break;
 				}
-				doc.add(info);
+
+				// doc = new Document(info, cat);
+				category.addTweets(info);
+				// category.incrementTweets();
+				// category.addDocument(doc);
+			}
+			
+			buff.close();
+
+		}catch(IOException e){
+			System.out.println("Something bad happened :(\n");
+			System.exit(1);
+		}
+	}
+
+	public ArrayList<String> readTestingFile(String filename){
+
+		ArrayList<String> list = new ArrayList<String>();
+		File file = new File(filename);
+		// Document doc;
+		String info;
+				
+		try{
+			FileReader fr = new FileReader(file);
+			BufferedReader buff = new BufferedReader(fr);
+				
+			while(true){
+				info = buff.readLine();
+					
+				if(info == null){
+					break;
+				}
+
+				//one line is one tweet
+				// doc = new Document(info);
+				list.add(info);
+				// category.addDocument(doc);
 			}
 			
 			buff.close();
@@ -123,8 +108,104 @@ public class IOHandler{
 			System.exit(1);
 		}
 
-		return doc;
+		return list;
 	}
+
+	public ArrayList<Category> readModel(String filename){
+		
+		ArrayList<Category> retVal = new ArrayList<Category>();
+		File file = new File(filename);
+		Category cat;
+		String info;
+				
+		try{
+			FileReader fr = new FileReader(file);
+			BufferedReader buff = new BufferedReader(fr);
+				
+			while(true){
+				info = buff.readLine();
+					
+				if(info == null){
+					break;
+				}
+
+				cat = new Category(info.split(","));
+				retVal.add(cat);
+			}
+			
+			buff.close();
+
+		}catch(IOException e){
+			System.out.println("Something bad happened :(\n");
+			System.exit(1);
+		}
+
+		return retVal;
+	}
+
+	public void writeModel(ArrayList<Category> cat, String filename){
+		File file = new File(filename);
+		Category temp;
+
+		try{
+			
+			FileWriter fw = new FileWriter (file);
+			BufferedWriter buff = new BufferedWriter(fw);
+			PrintWriter print = new PrintWriter(buff);
+			
+			for(int i = 0 ; i < cat.size() ; i++){
+				temp = cat.get(i);
+				//comma lang, don't put space
+				print.print(temp.name + "," + temp.getProbability());
+				for(int j = 0 ; j < dictionary.size() ; j++){
+					print.print("," + temp.getWordProbability(j, 1));
+				}
+				print.println("");
+				// print.println((start + i) + " " + list.get(i));
+			}
+
+			print.close();
+			
+		}catch(IOException e){}
+	}
+
+	//serializable
+/*	public void writeModelBin(ArrayList<Category> cat){
+		// File file = new File("tempmodel");
+		Category temp;
+
+		try{
+			FileOutputStream fout = new FileOutputStream("model");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);   
+			
+			for(int i = 0 ; i < cat.size() ; i++){
+				temp = cat.get(i);
+				oos.writeObject(temp);
+			}
+
+			oos.close();
+			
+		}catch(IOException e){}
+	}
+
+	public ArrayList<Category> readModelBin(){
+		
+		ArrayList<Category> cat;
+		Category temp;
+
+		try{
+			FileInputStream fin = new FileInputStream("c:\\address.ser");
+	   	ObjectInputStream ois = new ObjectInputStream(fin);
+		  
+
+		  while()
+		  temp = (Category) ois.readObject();
+		  cat.add(temp);
+
+		  ois.close();
+			
+		}catch(IOException e){}
+	}*/
 
 	public void writeResult(int start, ArrayList<String> list, String filename){
 		File file = new File(filename);
@@ -182,6 +263,7 @@ public class IOHandler{
 					double x = (double)confMatrix[i][j]/(double)rowTotal[i];
 					print.print("," + x);
 				}
+
 				print.println();
 			}
 
@@ -190,70 +272,4 @@ public class IOHandler{
 		}catch(IOException e){}
 	}
 
-
-
-	// for changedic
-	public void writeDict(ArrayList<String> list, String filename){
-		File file = new File(filename);
-		
-		try{
-			
-			FileWriter fw = new FileWriter (file);
-			BufferedWriter buff = new BufferedWriter(fw);
-			PrintWriter print = new PrintWriter(buff);
-			
-			for(int i = 0 ; i < list.size() ; i++){
-				print.println(list.get(i));
-			}
-
-			print.close();
-			
-		}catch(IOException e){}
-	}
-
-	//for changedic
-	public ArrayList<String> buildDictionary(int n){
-
-		// Document doc = new Document();
-		ArrayList<String> dict = new ArrayList<String>();
-
-		for(int i = 0 ; i < n ; i++){
-			File file = new File("data/" + i);
-			String info;
-					
-			try{
-				FileReader fr = new FileReader(file);
-				BufferedReader buff = new BufferedReader(fr);
-					
-				while(true){
-					info = buff.readLine();
-						
-					if(info == null){
-						break;
-					}
-					String[] temp = info.toLowerCase().split("[^a-zA-Z]");
-
-					for(int j = 0 ; j < temp.length ; j++){
-						if(!temp[j].equals("")){
-							int index = dict.indexOf(temp[j]);
-
-							if(index < 0){
-								dict.add(temp[j]);
-							}
-						}
-					}
-								// doc.add(info);
-				}
-				
-				buff.close();
-
-			}catch(IOException e){
-				System.out.println("Something bad happened :(\n");
-				System.exit(1);
-			}
-		}
-		
-
-		return dict;
-	}
 }

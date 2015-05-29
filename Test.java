@@ -1,8 +1,8 @@
 import java.util.*;
 import java.math.*;
 
-class Main{
-	
+class Test{
+
 	public static void main(String args[]){
 
 		double lambda = 1.0;
@@ -13,36 +13,32 @@ class Main{
 
 		IOHandler handler = new IOHandler();
 
-		ArrayList<String> vocab = handler.readDictionary("stemmedWords");
-		// ArrayList<String> vocab = handler.readDictionary("vocab2");
+		ArrayList<String> vocab = handler.readDictionary("vocabulary");
+
+		//set the dictionary to be used
 		Document.setDictionary(vocab);
 		Category.setDictionary(vocab);
 
-		ArrayList<String> index = handler.readMap("index");
-		int training = (int)(Math.ceil(index.size()*0.6));
-
-		ArrayList<Category> classes = handler.getCategories();
-		ArrayList<String> catNames = handler.getCatNames();
+		//get the classes from the saved model
+		ArrayList<Category> classes = handler.readModel("tempmodel");
 
 		Document doc;
 		Category cat;
 
 		int i;
-		for(i = 0 ; i < training ; i++){
-			doc = handler.readFile("data/" + i);
-			cat = classes.get(catNames.indexOf(index.get(i)));
-			cat.addDocument(doc);
-		}
 
-		for(i = 0 ; i < classes.size() ; i++){
-			classes.get(i).setProbability(training, lambda);
-		}
+
+		handler.writeModel(classes, "model");
+		
+		//=======================================================
+		// System.exit(0);
 
 		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<String> test = handler.readTestingFile("csdataset.txt");
 
-		for(i = training ; i < index.size() ; i++){
-			doc = handler.readFile("data/" + i);
-			ArrayList<Integer> wi = doc.getWI();
+
+		for(i = 0 ; i < test.size() ; i++){
+			doc = new Document(test.get(i));
 			double prob, product, best = Double.NEGATIVE_INFINITY;
 			int bestIndex = -1;
 			Category temp;
@@ -53,29 +49,28 @@ class Main{
 				product = 0;
 
 				for(int j = 0 ; j < vocab.size() ; j++){
-					if(wi.contains(j)){
-						prob = temp.getWordProbability(j, true);
-					}
-					else{
-						prob = temp.getWordProbability(j, false);
-					}
+					prob = temp.getWordProbability(j, doc.words[j]);
 					product = Math.log(prob) + product;
 				}
+
 				product += Math.log(temp.getProbability());
 
 
 				if(product > best){
 					best = product;
 					bestIndex = k;
-				}				
+				}
+
 			}
+		//====================================================
 
 			result.add(classes.get(bestIndex).name);
 		}
 
+		int training = 0;
 		handler.writeResult(training, result, "classification");
 		
-		int j = training;
+/*		int j = training;
 		String x, y;
 		int[][] confMatrix = new int[classes.size()][classes.size()];
 		int[] rowTotal = new int[classes.size()];
@@ -88,6 +83,6 @@ class Main{
 			j++;
 		}
 
-		handler.writeConfusionMatrix(confMatrix, rowTotal, "confusion_matrix" + lambda + ".csv");
+		handler.writeConfusionMatrix(confMatrix, rowTotal, "confusion_matrix" + lambda + ".csv");*/
 	}
 }
