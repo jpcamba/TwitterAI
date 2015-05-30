@@ -262,4 +262,49 @@ public class IOHandler{
 		}catch(IOException e){}
 	}
 
+	public void removeDavid(){
+		ArrayList<String> index = readClassification("index.txt");
+		ArrayList<String> test = readTestingFile("testing_set.txt");
+
+		File file = new File("testing_set.txt");
+		Category temp;
+
+		try{
+			
+			FileWriter fw = new FileWriter (file);
+			BufferedWriter buff = new BufferedWriter(fw);
+			PrintWriter print = new PrintWriter(buff);
+			
+			for(int i = 0 ; i < index.size() ; i++){
+		
+				if(index.get(i).equals("david")){
+					continue;
+				}
+				else{
+					print.println(test.get(i));
+				}
+			}
+
+			print.close();
+
+			file = new File("index.txt");
+			fw = new FileWriter (file);
+			buff = new BufferedWriter(fw);
+			print = new PrintWriter(buff);
+
+			for(int i = 0 ; i < index.size() ; i++){
+		
+				if(index.get(i).equals("david")){
+					continue;
+				}
+				else{
+					print.println(index.get(i));
+				}
+			}
+
+			print.close();
+			
+		}catch(IOException e){}
+	}
+
 }
