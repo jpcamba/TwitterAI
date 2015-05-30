@@ -51,16 +51,15 @@ class TwitterAI{
 	}
 
 	public void initializeGUI(){
-		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 550);
+		frame.setSize(600, 440);
 		frame.setLayout(new FlowLayout());      
 		frame.setResizable(false);
-		frame.getContentPane().setBackground(Color.WHITE);
+		//frame.getContentPane().setBackground(Color.WHITE);
 		
 		try {
 			font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("nfont.otf"));
-			font = font.deriveFont(18F);
+			font = font.deriveFont(13F);
 		}
 		
 		catch (Exception e) {
@@ -72,7 +71,7 @@ class TwitterAI{
 		tweetbox.setEditable(false);
 		tweetbox.setFont(font);
 		scroll = new JScrollPane(tweetbox);
-		scroll.setPreferredSize(new Dimension(730, 350));
+		scroll.setPreferredSize(new Dimension(530, 250));
 		scroll.setBorder(border);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -81,7 +80,7 @@ class TwitterAI{
 		typebox.setFont(font);
 		scroll2 = new JScrollPane(typebox);
 		scroll2.setBorder(border);
-		scroll2.setPreferredSize(new Dimension(730, 70));
+		scroll2.setPreferredSize(new Dimension(530, 70));
 		
 		check.setText("Check");
 		check.setFont(font);
@@ -95,13 +94,14 @@ class TwitterAI{
 		typecon.setOpaque(false);		
 		checkcon.setOpaque(false);		
 		
-		tweetcon.setPreferredSize(new Dimension(750, 370));
-		typecon.setPreferredSize(new Dimension(750, 80));
-		checkcon.setPreferredSize(new Dimension(750, 60));
+		tweetcon.setPreferredSize(new Dimension(550, 270));
+		typecon.setPreferredSize(new Dimension(550, 80));
+		checkcon.setPreferredSize(new Dimension(550, 60));
 		
 		frame.add(tweetcon);
 		frame.add(typecon);
 		frame.add(checkcon);
+		frame.setVisible(true);
 	}
 
 	public void checkTweet(String tweet){
