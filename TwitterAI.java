@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import javax.swing.text.DefaultCaret;
 
 class TwitterAI{
 
@@ -70,6 +71,10 @@ class TwitterAI{
 		tweetbox.setOpaque(true);
 		tweetbox.setEditable(false);
 		tweetbox.setFont(font);
+    DefaultCaret caret = (DefaultCaret)tweetbox.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
+
 		scroll = new JScrollPane(tweetbox);
 		scroll.setPreferredSize(new Dimension(530, 250));
 		scroll.setBorder(border);
