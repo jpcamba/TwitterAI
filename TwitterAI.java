@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 class TwitterAI{
 
@@ -24,6 +25,7 @@ class TwitterAI{
 	private JPanel tweetcon = new JPanel();
 	private JPanel typecon = new JPanel();
 	private JPanel checkcon = new JPanel();
+	private Font font;
 	
 	private static double lambda;
 	private ArrayList<Category> classes;
@@ -54,12 +56,21 @@ class TwitterAI{
 		frame.setSize(800, 550);
 		frame.setLayout(new FlowLayout());      
 		frame.setResizable(false);
+		frame.getContentPane().setBackground(Color.WHITE);
+		
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("nfont.otf"));
+			font = font.deriveFont(18F);
+		}
+		
+		catch (Exception e) {
+		}
 
-		Border border = BorderFactory.createLineBorder(Color.black, 1);
+		Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
 		
 		tweetbox.setOpaque(true);
 		tweetbox.setEditable(false);
-		tweetbox.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		tweetbox.setFont(font);
 		scroll = new JScrollPane(tweetbox);
 		scroll.setPreferredSize(new Dimension(730, 350));
 		scroll.setBorder(border);
@@ -67,20 +78,22 @@ class TwitterAI{
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		typebox.setOpaque(true);
-		typebox.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		typebox.setFont(font);
 		scroll2 = new JScrollPane(typebox);
 		scroll2.setBorder(border);
 		scroll2.setPreferredSize(new Dimension(730, 70));
-		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		check.setText("Check");
+		check.setFont(font);
 		check.setSize(50, 55);
 		check.addActionListener(new ButtonListener());
 		
-		tweetcon.add(scroll);		
+		tweetcon.add(scroll);
 		typecon.add(scroll2);		
 		checkcon.add(check);		
+		tweetcon.setOpaque(false);		
+		typecon.setOpaque(false);		
+		checkcon.setOpaque(false);		
 		
 		tweetcon.setPreferredSize(new Dimension(750, 370));
 		typecon.setPreferredSize(new Dimension(750, 80));
