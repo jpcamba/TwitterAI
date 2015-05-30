@@ -25,18 +25,10 @@ class Test{
 		Document doc;
 		Category cat;
 
-		int i;
-
-
-		handler.writeModel(classes, "model");
-		
-		//=======================================================
-		// System.exit(0);
-
 		ArrayList<String> result = new ArrayList<String>();
-		ArrayList<String> test = handler.readTestingFile("csdataset.txt");
+		ArrayList<String> test = handler.readTestingFile("testing_set.txt");
 
-
+		int i;
 		for(i = 0 ; i < test.size() ; i++){
 			doc = new Document(test.get(i));
 			double prob, product, best = Double.NEGATIVE_INFINITY;
@@ -69,20 +61,24 @@ class Test{
 
 		int training = 0;
 		handler.writeResult(training, result, "classification");
-		
-/*		int j = training;
+		ArrayList<String> index = handler.readClassification("index.txt");
+
+		ArrayList<String> catNames = new ArrayList<String>();
+		for(i = 0 ; i < classes.size() ; i++){
+			catNames.add(classes.get(i).name);
+		}
+
 		String x, y;
 		int[][] confMatrix = new int[classes.size()][classes.size()];
 		int[] rowTotal = new int[classes.size()];
 		
 		for(i = 0 ; i < result.size() ; i++){
 			x = result.get(i);
-			y = index.get(j);
+			y = index.get(i);
 			confMatrix[catNames.indexOf(x)][catNames.indexOf(y)] += 1;
 			rowTotal[catNames.indexOf(x)] += 1;
-			j++;
 		}
 
-		handler.writeConfusionMatrix(confMatrix, rowTotal, "confusion_matrix" + lambda + ".csv");*/
+		handler.writeConfusionMatrix(confMatrix, rowTotal, "confusion_matrix" + lambda + ".csv", catNames);
 	}
 }

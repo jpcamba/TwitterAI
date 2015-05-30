@@ -4,7 +4,7 @@ import java.math.*;
 class Train{
 
 	// public static String[] filename = {"entertainment", "terrorism"};
-	public static String[] filename = {"chad.txt", "david.txt"};
+	public static String[] filename = {"chad", "david", "cjay"};
 	
 	public static void main(String args[]){
 
@@ -37,7 +37,7 @@ class Train{
 
 			//read tweet archives for this category
 			//one line is one tweet, so one file is one person
-			handler.readTrainingFile(filename[i], cat);
+			handler.readTrainingFile(filename[i] + ".txt", cat);
 		}
 
 

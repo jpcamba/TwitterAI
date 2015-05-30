@@ -3,20 +3,19 @@ import java.util.*;
 
 public class IOHandler{
 
-	ArrayList<String> map;
 	ArrayList<String> dictionary;
-	ArrayList<String> catNames;
 	ArrayList<Category> categories;
 
 	Hashtable<String, Category> hash;
 
 	IOHandler(){
-		map = new ArrayList<String>();
 		dictionary = new ArrayList<String>();
-		catNames = new ArrayList<String>();
 		categories = new ArrayList<Category>();
 	}
 
+	/**
+	*Reads the dictionary to be used
+	**/
 	public ArrayList<String> readDictionary(String filename){
 
 		String info;
@@ -44,6 +43,35 @@ public class IOHandler{
 		}
 
 		return dictionary;
+	}
+
+	public ArrayList<String> readClassification(String filename){
+		File file = new File(filename);
+		ArrayList<String> list = new ArrayList<String>();
+		String info;
+				
+		try{
+			FileReader fr = new FileReader(file);
+			BufferedReader buff = new BufferedReader(fr);
+				
+			while(true){
+				info = buff.readLine();
+					
+				if(info == null){
+					break;
+				}
+
+				list.add(info);
+			}
+			
+			buff.close();
+
+		}catch(IOException e){
+			System.out.println("Something bad happened :(\n");
+			System.exit(1);
+		}
+
+		return list;
 	}
 
 	public void readTrainingFile(String filename, Category category){
@@ -169,44 +197,6 @@ public class IOHandler{
 		}catch(IOException e){}
 	}
 
-	//serializable
-/*	public void writeModelBin(ArrayList<Category> cat){
-		// File file = new File("tempmodel");
-		Category temp;
-
-		try{
-			FileOutputStream fout = new FileOutputStream("model");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);   
-			
-			for(int i = 0 ; i < cat.size() ; i++){
-				temp = cat.get(i);
-				oos.writeObject(temp);
-			}
-
-			oos.close();
-			
-		}catch(IOException e){}
-	}
-
-	public ArrayList<Category> readModelBin(){
-		
-		ArrayList<Category> cat;
-		Category temp;
-
-		try{
-			FileInputStream fin = new FileInputStream("c:\\address.ser");
-	   	ObjectInputStream ois = new ObjectInputStream(fin);
-		  
-
-		  while()
-		  temp = (Category) ois.readObject();
-		  cat.add(temp);
-
-		  ois.close();
-			
-		}catch(IOException e){}
-	}*/
-
 	public void writeResult(int start, ArrayList<String> list, String filename){
 		File file = new File(filename);
 		
@@ -225,7 +215,7 @@ public class IOHandler{
 		}catch(IOException e){}
 	}
 
-	public void writeConfusionMatrix(int[][] confMatrix, int[] rowTotal, String filename){
+	public void writeConfusionMatrix(int[][] confMatrix, int[] rowTotal, String filename, ArrayList<String> catNames){
 		File file = new File(filename);
 
 		try{
@@ -241,9 +231,9 @@ public class IOHandler{
 
 			print.println("");
 
-			for(int i = 0 ; i < hash.size() ; i++){
+			for(int i = 0 ; i < catNames.size() ; i++){
 				print.print(catNames.get(i) + ",");
-				for(int j = 0 ; j < hash.size() ; j++){
+				for(int j = 0 ; j < catNames.size() ; j++){
 					print.print("," + confMatrix[i][j]);
 				}
 				print.println();
@@ -257,9 +247,9 @@ public class IOHandler{
 			print.println("");
 
 
-			for(int i = 0 ; i < hash.size() ; i++){
+			for(int i = 0 ; i < catNames.size() ; i++){
 				print.print(catNames.get(i) + ",");
-				for(int j = 0 ; j < hash.size() ; j++){
+				for(int j = 0 ; j < catNames.size() ; j++){
 					double x = (double)confMatrix[i][j]/(double)rowTotal[i];
 					print.print("," + x);
 				}

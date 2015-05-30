@@ -14,6 +14,7 @@ public class DictMaker{
 		DictMaker dm = new DictMaker();
 		dm.readFrom("david.txt");
 		dm.readFrom("chad.txt");
+		dm.readFrom("cjay.txt");
 		dm.writeDictionary();
 	}
 
