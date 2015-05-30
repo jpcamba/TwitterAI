@@ -3,6 +3,7 @@ import java.math.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.text.DefaultCaret;
 
 class TwitterAI{
 
@@ -62,6 +63,9 @@ class TwitterAI{
 		tweetbox.setLocation(10, 10);
 		tweetbox.setVisible(true);
 		tweetbox.setEditable(false);
+    DefaultCaret caret = (DefaultCaret)tweetbox.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
 
 		scroll = new JScrollPane(tweetbox);
 		scroll.setSize(390, 250);
